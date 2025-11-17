@@ -1,4 +1,135 @@
 /* styles */
 body {
-    padding-bottom: 40px;
+    background-color: #0b0b0b;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+
+h2 {
+    margin-top: 40px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.carrossel-filmes {
+    position: relative;
+}
+
+.filme-linha {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.filme-card {
+    min-width: 220px;
+    background-color: #181818;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+    .filme-card:hover {
+        transform: scale(1.05);
+    }
+
+    .filme-card img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+    }
+
+.filme-info {
+    padding: 10px;
+    text-align: center;
+}
+
+    .filme-info h5 {
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+
+    .filme-info p {
+        font-size: 14px;
+        color: #bbb;
+        height: 40px;
+        overflow: hidden;
+    }
+
+.filme-botoes {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+    .filme-botoes button {
+        background-color: #e50914;
+        border: none;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 13px;
+        transition: 0.3s;
+    }
+
+        .filme-botoes button:hover {
+            background-color: #b0060f;
+        }
+/* Scrollbar personalizada */
+.filme-linha::-webkit-scrollbar {
+    height: 8px;
+}
+
+.filme-linha::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 10px;
+}
+/* Áreas clicáveis laterais */
+.seta-esquerda,
+.seta-direita {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+
+    .seta-esquerda:hover,
+    .seta-direita:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+.seta-esquerda {
+    left: 0;
+}
+
+.seta-direita {
+    right: 0;
+}
+
+.seta-icone {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    color: white;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.seta-esquerda .seta-icone {
+    left: 20px;
+}
+
+.seta-direita .seta-icone {
+    right: 20px;
 }
