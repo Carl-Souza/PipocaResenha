@@ -1,0 +1,8 @@
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<h2>Registrar</h2>
+<form method="post" action="/Account/Register">
+    <div class="mb-3"><input name="name" class="form-control" placeholder="Nome" required /></div>
+    <div class="mb-3"><input type="email" name="email" class="form-control" placeholder="Email" required /></div>
+    <div class="mb-3"><input type="password" name="password" class="form-control" placeholder="Senha" required /></div>
+    <button class="btn btn-primary">Criar conta</button>
+</form>

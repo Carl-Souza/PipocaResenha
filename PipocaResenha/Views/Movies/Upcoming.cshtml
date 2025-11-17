@@ -1,0 +1,14 @@
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<h1>Em Breve</h1>
+<p>Filmes organizados por mês (visual horizontal)</p>
+<div class="mb-4">
+    <!-- placeholder: implemente agrupamento por mês -->
+    <div class="d-flex overflow-auto">
+        @foreach(var m in Model) {
+            <div class="card me-3" style="min-width:250px;">
+                <img src="@m.PosterUrl" class="card-img-top" />
+                <div class="card-body"><h6>@m.Title</h6><p>@m.ShortSynopsis</p></div>
+            </div>
+        }
+    </div>
+</div>

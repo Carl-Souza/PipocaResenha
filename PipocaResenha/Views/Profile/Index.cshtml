@@ -1,0 +1,18 @@
+@model PipocaResenha.Models.User
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<h2>Meu Perfil</h2>
+<div class="row">
+    <div class="col-md-4">
+        <img src="@Model.PhotoUrl" class="img-fluid" />
+        <h4>@Model.Name</h4>
+        <p>@Model.Email</p>
+    </div>
+    <div class="col-md-8">
+        <h5>Meus reviews</h5>
+        <div id="reviews-list">
+            @foreach(var r in Model.Reviews) {
+                <div class="card mb-2"><div class="card-body"><h6>@r.Movie.Title</h6><p>@r.Text</p><small>Nota: @r.Rating</small></div></div>
+            }
+        </div>
+    </div>
+</div>
