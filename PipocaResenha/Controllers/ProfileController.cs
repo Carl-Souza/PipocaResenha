@@ -5,6 +5,7 @@ using PipocaResenha.Data;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication;
+using PipocaResenha.Models;
 
 namespace PipocaResenha.Controllers
 {
@@ -16,24 +17,24 @@ namespace PipocaResenha.Controllers
 
         public async Task<IActionResult> Index()
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
-
-            var user = await _db.Users
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
+            
+            var usuario = await _db.Usuarios
                 .Include(u => u.Reviews)
-                .ThenInclude(r => r.Movie)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+                .ThenInclude(r => r.Filme)
+                .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
 
-            return View(user);
+            return View(usuario);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(string name, string photoUrl)
+        public async Task<IActionResult> EditProfile(string nome, string photoUrl)
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
-            var user = await _db.Users.FindAsync(userId);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
+            var usuario = await _db.Usuarios.FindAsync(codigoUsuario);
 
-            user.Name = name;
-            user.PhotoUrl = photoUrl;
+            usuario.Nome = nome;
+            usuario.PhotoUrl = photoUrl;
 
             await _db.SaveChangesAsync();
 
@@ -43,14 +44,14 @@ namespace PipocaResenha.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount()
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
 
-            var user = await _db.Users
+            var usuario = await _db.Usuarios
                 .Include(u => u.Reviews)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
 
-            _db.Reviews.RemoveRange(user.Reviews);
-            _db.Users.Remove(user);
+            _db.Reviews.RemoveRange(usuario.Reviews);
+            _db.Usuarios.Remove(usuario);
 
             await _db.SaveChangesAsync();
             await HttpContext.SignOutAsync(); 

@@ -15,34 +15,34 @@ namespace PipocaResenha.Controllers
         public ReviewsController(ApplicationDbContext db) { _db = db; }
 
         [HttpPost]
-        public async Task<IActionResult> Create(int movieId, byte rating, string text)
+        public async Task<IActionResult> Create(int codigoFilme, byte nota, string text)
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
 
             bool exists = await _db.Reviews
-                .AnyAsync(r => r.MovieId == movieId && r.UserId == userId);
+                .AnyAsync(r => r.CodigoFilme == codigoFilme && r.CodigoUsuario == codigoUsuario);
 
             if (exists)
                 return BadRequest("Você já avaliou este filme.");
 
             var review = new Review
             {
-                MovieId = movieId,
-                UserId = userId,
-                Rating = rating,
+                CodigoFilme = codigoFilme,
+                CodigoUsuario = codigoUsuario,
+                Nota = nota,
                 Text = text
             };
 
             _db.Reviews.Add(review);
             await _db.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Movies", new { id = movieId });
+            return RedirectToAction("Details", "Movies", new { codigo = codigoFilme });
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int codigo)
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
-            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
+            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Codigo == codigo && r.CodigoUsuario == codigoUsuario);
 
             if (review == null) return Unauthorized();
             return View(review);
@@ -51,23 +51,23 @@ namespace PipocaResenha.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Review model)
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
-            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Id == model.Id && r.UserId == userId);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
+            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Codigo == model.Codigo && r.CodigoUsuario == codigoUsuario);
 
             if (review == null) return Unauthorized();
 
-            review.Rating = model.Rating;
+            review.Nota = model.Nota;
             review.Text = model.Text;
 
             await _db.SaveChangesAsync();
-            return RedirectToAction("Details", "Movies", new { id = review.MovieId });
+            return RedirectToAction("Details", "Movies", new { codigo = review.CodigoFilme });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int codigo)
         {
-            int userId = int.Parse(User.FindFirst("Id").Value);
-            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+            int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
+            var review = await _db.Reviews.FirstOrDefaultAsync(r => r.Codigo == codigo && r.CodigoUsuario == codigoUsuario  );
 
             if (review == null) return Unauthorized();
 

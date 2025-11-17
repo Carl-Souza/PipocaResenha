@@ -1,0 +1,49 @@
+@model PipocaResenha.Models.Filmes
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<div class="row">
+    <div class="col-md-4">
+        <img src="@Model.PosterUrl" class="img-fluid" alt="@Model.Titulo" />
+    </div>
+    <div class="col-md-8">
+        <h2>@Model.Titulo</h2>
+        <p><strong>Faixa etária:</strong> @Model.FaixaEtaria</p>
+        <p><strong>Nota média:</strong> @(Model.Reviews.Any() ? Model.Reviews.Average(r => r.Nota) : 0)</p>
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Sinopse</h5>
+                <p>@Model.Sinopse</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4">Cinemas</h3>
+<div id="cinema-scrollable" data-filme-codigo="@Model.Codigo" style="height:300px; overflow:auto; border:1px solid #ddd; padding:10px;">
+    <div id="cinema-list"></div>
+</div>
+
+@section Scripts {
+<script>
+let paginaCinema = 1;
+let loadingCinemas = false;
+function loadCinemas() {
+    if (loadingCinemas) return;
+    loadingCinemas = true;
+    const codigoFilme = $('#cinema-scrollable').data('filme-codigo');
+        $.get('/Movies/ListaCinemasParaFilmes', { codigoFilme: codigoFilme, page: paginaCinema }, function(data){
+        if (data && data.length) {
+            $('#cinema-list').append(data.map(c => `<div class="card mb-2"><div class='card-body'><h5>${c.nome}</h5><p>${c.endereco}</p></div></div>`).join(''));
+            paginaCinema++;
+            loadingCinemas = false;
+        }
+    });
+}
+$('#cinema-scrollable').on('scroll', function(){
+    var el = $(this)[0];
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10) {
+        loadCinemas();
+    }
+});
+$(document).ready(loadCinemas);
+</script>
+}

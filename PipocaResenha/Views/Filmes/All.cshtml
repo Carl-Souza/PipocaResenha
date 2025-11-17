@@ -2,7 +2,7 @@
 <h1>Todos os filmes</h1>
 <form method="get" class="row g-3 mb-3">
     <div class="col-md-4"><input name="search" class="form-control" placeholder="Pesquisar..." /></div>
-    <div class="col-md-3"><input name="city" class="form-control" placeholder="Cidade" /></div>
+    <div class="col-md-3"><input name="cidade" class="form-control" placeholder="Cidade" /></div>
     <div class="col-md-2"><select name="age" class="form-select"><option value="">Faixa</option><option>12</option><option>14</option></select></div>
     <div class="col-md-2"><button class="btn btn-primary">Filtrar</button></div>
 </form>
@@ -10,13 +10,13 @@
     @foreach(var m in Model) {
         <div class="col-md-3 mb-3">
             <div class="card h-100">
-                <img src="@m.PosterUrl" class="card-img-top" alt="@m.Title" />
+                <img src="@m.PosterUrl" class="card-img-top" alt="@m.Titulo" />
                 <div class="card-body">
-                    <h6>@m.Title</h6>
-                    <p>@m.ShortSynopsis</p>
+                    <h6>@m.Titulo</h6>
+                    <p>@m.SinopseCurta</p>
                 </div>
                 <div class="card-footer">
-                    <a class="btn btn-sm btn-primary" href="/Movies/Details/@m.Id">Ver</a>
+                    <a class="btn btn-sm btn-primary" href="/Movies/Details/@m.Codigo">Ver</a>
                 </div>
             </div>
         </div>

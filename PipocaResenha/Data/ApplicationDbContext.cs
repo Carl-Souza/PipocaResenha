@@ -7,16 +7,16 @@ namespace PipocaResenha.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Usuarios> Usuarios { get; set; }
+        public DbSet<Filmes> Filme { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Cinema> Cinemas { get; set; }
-        public DbSet<MovieCinema> MovieCinemas { get; set; }
+        public DbSet<Cinemas> Cinemas { get; set; }
+        public DbSet<FilmesCinema> FilmeCinema { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<MovieCinema>().HasKey(mc => new { mc.MovieId, mc.CinemaId });
+            builder.Entity<FilmesCinema>().HasKey(mc => new { mc.CodigoFilme, mc.CodigoCinema });
         }
     }
 }

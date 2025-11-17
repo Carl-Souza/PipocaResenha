@@ -5,12 +5,12 @@ namespace PipocaResenha.Models
 {
     public class Review
     {
-        public int Id { get; set; }
-        [Required] public int MovieId { get; set; }
-        public Movie Movie { get; set; }
-        [Required] public int UserId { get; set; }
-        public User User { get; set; }
-        [Range(0, 10)] public byte Rating { get; set; }
+        public int Codigo { get; set; }
+        [Required] public int CodigoFilme { get; set; }
+        public Filmes Filme { get; set; }
+        [Required] public int CodigoUsuario { get; set; }
+        public Usuarios Usuario { get; set; }
+        [Range(0, 10)] public byte Nota { get; set; }
         public string Text { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
