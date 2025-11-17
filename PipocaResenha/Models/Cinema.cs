@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PipocaResenha.Models
 {
@@ -9,10 +10,10 @@ namespace PipocaResenha.Models
         public string Endereco { get; set; }
     }
 
-    public class FilmesCinema {
-        public int CodigoFilme { get; set; }
-        public Filmes Filme { get; set; }
-        public int CodigoCinema { get; set; }
-        public Cinemas Cinema { get; set; }
+    public class FilmesCinemas {
+        [Key] public int CodigoFilme { get; set; }
+        [ForeignKey("CodigoFilme")] public Filmes Filmes { get; set; }
+        [Key] public int CodigoCinema { get; set; }
+        [ForeignKey("CodigoCinema")] public Cinemas Cinema { get; set; }
     }
 }

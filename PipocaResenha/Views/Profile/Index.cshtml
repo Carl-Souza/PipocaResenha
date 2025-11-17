@@ -11,7 +11,7 @@
         <h5>Meus reviews</h5>
         <div id="reviews-list">
             @foreach(var r in Model.Reviews) {
-                <div class="card mb-2"><div class="card-body"><h6>@r.Filme.Titulo</h6><p>@r.Text</p><small>Nota: @r.Nota</small></div></div>
+                <div class="card mb-2"><div class="card-body"><h6>@r.Filmes.Titulo</h6><p>@r.TextoReview</p><small>Nota: @r.Nota</small></div></div>
             }
         </div>
     </div>

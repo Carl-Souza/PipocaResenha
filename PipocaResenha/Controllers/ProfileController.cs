@@ -21,7 +21,7 @@ namespace PipocaResenha.Controllers
             
             var usuario = await _db.Usuario
                 .Include(u => u.Reviews)
-                .ThenInclude(r => r.Filme)
+                .ThenInclude(r => r.Filmes)
                 .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
 
             return View(usuario);

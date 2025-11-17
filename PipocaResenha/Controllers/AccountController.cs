@@ -28,7 +28,7 @@ namespace PipocaResenha.Controllers
             {
                 Nome = name,
                 Email = email,
-                PasswordHash = Hash(password)
+                PasswordHash = password
             };
 
             _db.Usuario.Add(usuario);
@@ -42,7 +42,7 @@ namespace PipocaResenha.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             var usuario = await _db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-            if (usuario == null || usuario.PasswordHash != Hash(password))
+            if (usuario == null || usuario.PasswordHash != password)
                 return BadRequest("Credenciais inválidas.");
 
             var claims = new[]

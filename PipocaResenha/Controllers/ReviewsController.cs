@@ -30,7 +30,7 @@ namespace PipocaResenha.Controllers
                 CodigoFilme = codigoFilme,
                 CodigoUsuario = codigoUsuario,
                 Nota = nota,
-                Text = text
+                TextoReview = text
             };
 
             _db.Reviews.Add(review);
@@ -57,7 +57,7 @@ namespace PipocaResenha.Controllers
             if (review == null) return Unauthorized();
 
             review.Nota = model.Nota;
-            review.Text = model.Text;
+            review.TextoReview = model.TextoReview;
 
             await _db.SaveChangesAsync();
             return RedirectToAction("Details", "Movies", new { codigo = review.CodigoFilme });

@@ -14,13 +14,13 @@ namespace PipocaResenha.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var lancamentos = await _db.Filme
+            var lancamentos = await _db.Filmes
                 .Where(m => m.EmCartaz)
                 .OrderByDescending(m => m.DataLancamento)
                 .Take(12)
                 .ToListAsync();
 
-            var top10 = await _db.Filme
+            var top10 = await _db.Filmes
                 .OrderByDescending(m => m.Reviews.Average(r => (double?)r.Nota) ?? 0)
                 .Take(10)
                 .ToListAsync();
@@ -31,7 +31,7 @@ namespace PipocaResenha.Controllers
 
         public async Task<IActionResult> Details(int codigo)
         {
-            var movie = await _db.Filme
+            var movie = await _db.Filmes
                 .Include(m => m.Reviews)
                 .FirstOrDefaultAsync(m => m.Codigo == codigo);
 
@@ -43,7 +43,7 @@ namespace PipocaResenha.Controllers
         {
             int pageSize = 5;
 
-            var cinemas = await _db.FilmeCinema
+            var cinemas = await _db.FilmesCinemas
                 .Where(mc => mc.CodigoFilme == codigoFilme)
                 .Include(mc => mc.Cinema)
                 .Skip((page - 1) * pageSize)
@@ -60,7 +60,7 @@ namespace PipocaResenha.Controllers
 
         public async Task<IActionResult> All(string search, string age, string cidade)
         {
-            var query = _db.Filme.Include(m => m.FilmesCinemas).AsQueryable();
+            var query = _db.Filmes.Include(m => m.FilmesCinemas).AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(m => m.Titulo.Contains(search));
