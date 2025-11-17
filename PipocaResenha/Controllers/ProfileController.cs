@@ -19,7 +19,7 @@ namespace PipocaResenha.Controllers
         {
             int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
             
-            var usuario = await _db.Usuarios
+            var usuario = await _db.Usuario
                 .Include(u => u.Reviews)
                 .ThenInclude(r => r.Filme)
                 .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
@@ -31,7 +31,7 @@ namespace PipocaResenha.Controllers
         public async Task<IActionResult> EditProfile(string nome, string photoUrl)
         {
             int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
-            var usuario = await _db.Usuarios.FindAsync(codigoUsuario);
+            var usuario = await _db.Usuario.FindAsync(codigoUsuario);
 
             usuario.Nome = nome;
             usuario.PhotoUrl = photoUrl;
@@ -46,12 +46,12 @@ namespace PipocaResenha.Controllers
         {
             int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
 
-            var usuario = await _db.Usuarios
+            var usuario = await _db.Usuario
                 .Include(u => u.Reviews)
                 .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
 
             _db.Reviews.RemoveRange(usuario.Reviews);
-            _db.Usuarios.Remove(usuario);
+            _db.Usuario.Remove(usuario);
 
             await _db.SaveChangesAsync();
             await HttpContext.SignOutAsync(); 

@@ -6,7 +6,7 @@ namespace PipocaResenha.Models
 {
     public class Filmes
     {
-        public int Codigo { get; set; }
+        [Key] public int Codigo { get; set; }
         [Required] public string Titulo { get; set; }
         public string SinopseCurta { get; set; }
         public string Sinopse { get; set; }

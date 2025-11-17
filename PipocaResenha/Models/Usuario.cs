@@ -5,7 +5,7 @@ namespace PipocaResenha.Models
 {
     public class Usuarios
     {
-        public int Codigo { get; set; }
+        [Key] public int Codigo { get; set; }
         [Required] public string Nome { get; set; }
         [Required, EmailAddress] public string Email { get; set; }
         [Required] public string PasswordHash { get; set; }

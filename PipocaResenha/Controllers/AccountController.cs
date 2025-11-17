@@ -21,7 +21,7 @@ namespace PipocaResenha.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string name, string email, string password)
         {
-            if (await _db.Usuarios.AnyAsync(u => u.Email == email))
+            if (await _db.Usuario.AnyAsync(u => u.Email == email))
                 return BadRequest("Email já cadastrado.");
 
             var usuario = new Usuarios
@@ -31,7 +31,7 @@ namespace PipocaResenha.Controllers
                 PasswordHash = Hash(password)
             };
 
-            _db.Usuarios.Add(usuario);
+            _db.Usuario.Add(usuario);
             await _db.SaveChangesAsync();
             return RedirectToAction("Login");
         }
@@ -41,18 +41,19 @@ namespace PipocaResenha.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var usuario = await _db.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            var usuario = await _db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null || usuario.PasswordHash != Hash(password))
                 return BadRequest("Credenciais inválidas.");
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, usuario.Nome),
-                new Claim("Codigo", usuario.Codigo.ToString())
-            };
+        new Claim(ClaimTypes.Name, usuario.Nome),
+        new Claim("Codigo", usuario.Codigo.ToString())
+    };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+            var identity = new ClaimsIdentity(claims, "CookieAuth");
+
+            await HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(identity));
 
             return RedirectToAction("Index", "Home");
         }

@@ -7,7 +7,7 @@ namespace PipocaResenha.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<Usuarios> Usuarios { get; set; }
+        public DbSet<Usuarios> Usuario { get; set; }
         public DbSet<Filmes> Filme { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Cinemas> Cinemas { get; set; }
