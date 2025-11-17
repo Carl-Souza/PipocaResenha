@@ -1,8 +1,49 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Início";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero bg-dark text-white p-5 rounded-4 mb-4 shadow">
+    <h1 class="display-4 fw-bold">Pipoca & Resenha</h1>
+    <p class="lead">Descubra filmes, séries e reviews detalhados!</p>
+    <a href="/Filmes/Index" class="btn btn-warning btn-lg mt-3">Explorar Filmes</a>
+</div>
+
+<h2 class="mb-3">Categorias populares</h2>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <a href="/Filmes/Populares" class="text-decoration-none">
+            <div class="card shadow-sm">
+                <img src="/images/categorias/populares.jpg" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Populares</h5>
+                    <p class="card-text text-muted">Os filmes mais assistidos no momento.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="/Filmes/Lancamentos" class="text-decoration-none">
+            <div class="card shadow-sm">
+                <img src="/images/categorias/lancamentos.jpg" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Lançamentos</h5>
+                    <p class="card-text text-muted">Filmes novos chegando ao catálogo.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="/Filmes/MelhoresAvaliados" class="text-decoration-none">
+            <div class="card shadow-sm">
+                <img src="/images/categorias/melhores.jpg" class="card-img-top" />
+                <div class="card-body">
+                    <h5 class="card-title">Melhores avaliados</h5>
+                    <p class="card-text text-muted">As maiores notas e críticas positivas.</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
