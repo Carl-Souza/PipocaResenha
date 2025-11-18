@@ -11,15 +11,31 @@
     <script src="~/js/site.js"></script>    
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark fixed-top">
+        <div class="container col-lg-12">
+
             <a class="navbar-brand" href="/">Pipoca e Resenha</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/Filmes/All">Todos os Filmes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/Filmes/EmBreve">Em Breve</a></li>
+
+            <div class="collapse navbar-collapse" id="navFilmes">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Filmes/All">Todos os filmes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Filmes/EmBreve">Em breve</a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav ms-auto">
+            </div>   
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navFilmes" aria-controls="navFilmes" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-flex ms-auto">
+                <ul class="navbar-nav flex-row">
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item"><a class="nav-link" href="/Profile">Perfil</a></li>
@@ -32,12 +48,15 @@
                     }
                 </ul>
             </div>
+
+
+
         </div>
     </nav>
     <div class="container mt-4">
         @RenderBody()
     </div>
-    <footer class="bg-light py-4 mt-5">
+    <footer class="bg-dark py-4 mt-5">
         <div class="container text-center">
             <small>© Pipoca e Resenha - contato: contato@pipocaresenha.local</small>
         </div>
