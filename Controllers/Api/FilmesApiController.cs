@@ -1,56 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
-using PipocaResenha.Services;
+using Microsoft.EntityFrameworkCore;
+using PipocaResenha.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PipocaResenha.Controllers.Api
 {
-    [Route("api/filmes")]
     [ApiController]
+    [Route("api/filmes")]
     public class FilmesApiController : ControllerBase
     {
-        private readonly ITmdbService _tmdb;
-        public FilmesApiController(ITmdbService tmdb) => _tmdb = tmdb;
+        private readonly ApplicationDbContext _db;
+        public FilmesApiController(ApplicationDbContext db) { _db = db; }
 
-        // Lista principal (usada pelos carrosséis)
         [HttpGet("tmdb")]
-        public async Task<IActionResult> TmdbHome([FromQuery] string section = "Lancamentos", [FromQuery] int count = 10)
+        public async Task<IActionResult> GetSection(string section = "Lancamentos", int count = 12)
         {
-            var list = await _tmdb.GetHomeMoviesAsync(section, count);
-            var result = list.Select(m => new {
-                codigo = m.Codigo,
-                titulo = m.Titulo,
-                sinopseCurta = m.SinopseCurta,
-                posterUrl = m.PosterUrl,
-                detailsUrl = $"/Filmes/Details?tmdbId={m.Codigo}" // rota local que pode abrir detalhe via TMDB id
-            }).ToList();
+            var q = _db.Filmes.Include(f => f.Reviews).AsQueryable();
 
-            return Ok(result);
+            switch (section)
+            {
+                case "Destaque":
+                    q = q.OrderByDescending(f => f.Reviews.Any() ? f.Reviews.Average(r => (double)r.Nota) : 0);
+                    break;
+                case "MaisAssistidos":
+                    q = q.OrderByDescending(f => f.Reviews.Count);
+                    break;
+                default: // Lancamentos
+                    q = q.Where(f => f.EmCartaz).OrderByDescending(f => f.DataLancamento);
+                    break;
+            }
+
+            var list = await q.Take(count).Select(f => new
+            {
+                codigo = f.Codigo,
+                titulo = f.Titulo,
+                sinopseCurta = f.SinopseCurta,
+                posterUrl = f.PosterUrl,
+                detailsUrl = Url.Action("Details", "Filmes", new { codigo = f.Codigo })
+            }).ToListAsync();
+
+            return Ok(list);
         }
 
-        // Pesquisa livre
         [HttpGet("tmdb/search")]
-        public async Task<IActionResult> Search([FromQuery] string query, [FromQuery] int count = 5)
+        public async Task<IActionResult> Search(string query, int count = 40)
         {
-            if (string.IsNullOrWhiteSpace(query)) return BadRequest("query é obrigatório");
-            var list = await _tmdb.SearchMoviesAsync(query, count);
-            return Ok(list.Select(m => new { codigo = m.Codigo, titulo = m.Titulo, posterUrl = m.PosterUrl, sinopseCurta = m.SinopseCurta }));
-        }
-
-        // Detalhes + trailers (por tmdb id)
-        [HttpGet("tmdb/details/{id:int}")]
-        public async Task<IActionResult> Details(int id)
-        {
-            var d = await _tmdb.GetMovieDetailsAsync(id);
-            if (d == null) return NotFound();
-            return Ok(new {
-                codigo = d.Codigo,
-                titulo = d.Titulo,
-                sinopse = d.Sinopse,
-                posterUrl = d.PosterUrl,
-                dataLancamento = d.DataLancamento,
-                videos = d.Videos
-            });
+            if (string.IsNullOrWhiteSpace(query)) return BadRequest();
+            var list = await _db.Filmes
+                .Where(f => f.Titulo.Contains(query))
+                .Take(count)
+                .Select(f => new
+                {
+                    codigo = f.Codigo,
+                    titulo = f.Titulo,
+                    sinopseCurta = f.SinopseCurta,
+                    posterUrl = f.PosterUrl,
+                    detailsUrl = Url.Action("Details", "Filmes", new { codigo = f.Codigo })
+                })
+                .ToListAsync();
+            return Ok(list);
         }
     }
-}       
+}
