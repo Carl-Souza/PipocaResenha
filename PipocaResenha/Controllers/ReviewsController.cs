@@ -36,7 +36,7 @@ namespace PipocaResenha.Controllers
             _db.Reviews.Add(review);
             await _db.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Filmes", new { codigo = codigoFilme });
+            return RedirectToAction("Details", "Movies", new { codigo = codigoFilme });
         }
 
         public async Task<IActionResult> Edit(int codigo)
@@ -60,7 +60,7 @@ namespace PipocaResenha.Controllers
             review.TextoReview = model.TextoReview;
 
             await _db.SaveChangesAsync();
-            return RedirectToAction("Details", "Filmes", new { codigo = review.CodigoFilme });
+            return RedirectToAction("Details", "Movies", new { codigo = review.CodigoFilme });
         }
 
         [HttpPost]

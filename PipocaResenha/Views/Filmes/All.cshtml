@@ -19,7 +19,7 @@
 
   function renderCard(m) {
     const poster = m.posterUrl || 'https://via.placeholder.com/500x750?text=Sem+Imagem';
-    const details = m.detailsUrl || ('/Filmes/Details?codigo=' + (m.codigo || ''));
+    const details = m.detailsUrl || ('/Filmes/Details?tmdbId=' + (m.codigo || ''));
     return `
       <div class="col-md-3 mb-3">
         <div class="card h-100">
@@ -54,7 +54,7 @@
     if (!query) { fetchPopular(); return; }
     loading.style.display = 'flex';
     fetch(`/api/filmes/tmdb/search?query=${encodeURIComponent(query)}&count=40`)
-      .then(r => r.ok ? r.json() : Promise.reject(r))
+      .then r => r.ok ? r.json() : Promise.reject(r))
       .then(list => {
         loading.style.display = 'none';
         grid.innerHTML = (list && list.length) ? list.map(renderCard).join('') : '<div class="col-12 alert alert-info">Nenhum resultado.</div>';
@@ -72,6 +72,7 @@
     search(q);
   });
 
+  // carregamento inicial
   fetchPopular();
 })();
 </script>

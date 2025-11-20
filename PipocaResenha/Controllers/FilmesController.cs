@@ -1,4 +1,4 @@
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PipocaResenha.Data;
 using PipocaResenha.Models;
@@ -49,8 +49,8 @@ namespace PipocaResenha.Controllers
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(mc => new {
-                    nome = mc.Cinema.Nome,
-                    cidade = mc.Cinema.Cidade,
+                    name = mc.Cinema.Nome,
+                    Cidacidadede = mc.Cinema.Cidade,
                     endereco = mc.Cinema.Endereco
                 })
                 .ToListAsync();
