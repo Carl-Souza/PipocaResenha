@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const linha = car.querySelector('.filme-linha');
     if (!linha) return;
 
-    const spinnerWrapper = linha.querySelector('.spinner-border') ? linha.querySelector('.spinner-border').closest('div') : null;
+    // spinner placeholder é filho atual; vamos substituir pelo conteúdo
+    const spinner = linha.querySelector('.spinner-border') ? linha.querySelector('.spinner-border').closest('div') : null;
 
     fetch(`/api/filmes/tmdb?section=${encodeURIComponent(section)}&count=12`)
       .then(resp => {
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return resp.json();
       })
       .then(list => {
-        if (spinnerWrapper) spinnerWrapper.remove();
+        if (spinner) spinner.remove();
         if (!list || !list.length) {
           linha.innerHTML = '<div class="d-flex justify-content-center w-100 py-5"><div class="text-muted">Nenhum filme encontrado.</div></div>';
           return;
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
       })
       .catch(err => {
-        if (spinnerWrapper) spinnerWrapper.remove();
+        if (spinner) spinner.remove();
         linha.innerHTML = '<div class="d-flex justify-content-center w-100 py-5"><div class="text-danger">Erro ao carregar filmes.</div></div>';
         console.error('Erro carregando carrossel', section, err);
       });
