@@ -3,10 +3,7 @@
 <h2>Meu Perfil</h2>
 <div class="row">
     <div class="col-md-4">
-        @{
-            var photo = string.IsNullOrEmpty(Model.PhotoUrl) ? "https://via.placeholder.com/300x300?text=Sem+Foto" : Model.PhotoUrl;
-        }
-        <img src="@photo" class="img-fluid" alt="@Model.Nome" />
+        <img src="@Model.PhotoUrl" class="img-fluid" />
         <h4>@Model.Nome</h4>
         <p>@Model.Email</p>
     </div>

@@ -1,12 +1,8 @@
 @model PipocaResenha.Models.Filmes
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
-
- <div class="row">
+<div class="row">
     <div class="col-md-4">
-        @{
-            var poster = string.IsNullOrEmpty(Model.PosterUrl) ? "https://via.placeholder.com/500x750?text=Sem+Imagem" : Model.PosterUrl;
-        }
-        <img src="@poster" class="img-fluid" alt="@Model.Titulo" />
+        <img src="@Model.PosterUrl" class="img-fluid" alt="@Model.Titulo" />
     </div>
     <div class="col-md-8">
         <h2>@Model.Titulo</h2>
@@ -34,7 +30,7 @@ function loadCinemas() {
     if (loadingCinemas) return;
     loadingCinemas = true;
     const codigoFilme = $('#cinema-scrollable').data('filme-codigo');
-    $.get('/Movies/ListaCinemasParaFilmes', { codigoFilme: codigoFilme, page: paginaCinema }, function(data){
+        $.get('/Movies/ListaCinemasParaFilmes', { codigoFilme: codigoFilme, page: paginaCinema }, function(data){
         if (data && data.length) {
             $('#cinema-list').append(data.map(c => `<div class="card mb-2"><div class='card-body'><h5>${c.nome}</h5><p>${c.endereco}</p></div></div>`).join(''));
             paginaCinema++;

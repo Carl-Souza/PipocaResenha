@@ -1,37 +1,14 @@
-@using System.Globalization
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 <h1>Em Breve</h1>
 <p>Filmes organizados por mês</p>
-
-@{
-    var filmes = Model as IEnumerable<PipocaResenha.Models.Filmes> ?? Enumerable.Empty<PipocaResenha.Models.Filmes>();
-    // Agrupa por ano-mês; ordena do mais recente para o mais antigo
-    var grupos = filmes
-        .Where(f => f.DataLancamento.HasValue)
-        .OrderByDescending(f => f.DataLancamento)
-        .GroupBy(f => new { Ano = f.DataLancamento.Value.Year, Mes = f.DataLancamento.Value.Month })
-        .ToList();
-}
-
-@if (!grupos.Any()) {
-    <div class="alert alert-info">Nenhum lançamento agendado.</div>
-} else {
-    foreach (var g in grupos) {
-        var dataExibicao = new DateTime(g.Key.Ano, g.Key.Mes, 1);
-        <div class="mb-4">
-            <h3>@dataExibicao.ToString("MMMM yyyy", new CultureInfo("pt-BR"))</h3>
-            <div class="d-flex overflow-auto">
-                @foreach (var m in g) {
-                    var poster = string.IsNullOrEmpty(m.PosterUrl) ? "https://via.placeholder.com/300x450?text=Sem+Imagem" : m.PosterUrl;
-                    <div class="card me-3" style="min-width:250px;">
-                        <img src="@poster" class="card-img-top" alt="@m.Titulo" />
-                        <div class="card-body">
-                            <h6>@m.Titulo</h6>
-                            <p>@m.SinopseCurta</p>
-                        </div>
-                    </div>
-                }
+<div class="mb-4">
+    <!-- placeholder: implemente agrupamento por mês -->
+    <div class="d-flex overflow-auto">
+        @foreach(var m in Model) {
+            <div class="card me-3" style="min-width:250px;">
+                <img src="@m.PosterUrl" class="card-img-top" />
+                <div class="card-body"><h6>@m.Titulo</h6><p>@m.SinopseCurta</p></div>
             </div>
-        </div>
-    }
-}
+        }
+    </div>
+</div>
