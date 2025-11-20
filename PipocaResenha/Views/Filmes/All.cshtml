@@ -1,24 +1,79 @@
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 <h1>Todos os filmes</h1>
-<form method="get" class="row g-3 mb-3">
-    <div class="col-md-4"><input name="search" class="form-control" placeholder="Pesquisar..." /></div>
-    <div class="col-md-3"><input name="cidade" class="form-control" placeholder="Cidade" /></div>
-    <div class="col-md-2"><select name="age" class="form-select"><option value="">Faixa</option><option>12</option><option>14</option></select></div>
-    <div class="col-md-2"><button class="btn btn-primary">Filtrar</button></div>
+<form id="search-form" class="row g-3 mb-3">
+    <div class="col-md-4"><input id="search-input" class="form-control" placeholder="Pesquisar..." /></div>
+    <div class="col-md-3"><input id="cidade-input" class="form-control" placeholder="Cidade" disabled /></div>
+    <div class="col-md-2"><select id="age-select" class="form-select"><option value="">Faixa</option><option>12</option><option>14</option></select></div>
+    <div class="col-md-2"><button id="search-btn" class="btn btn-primary" type="submit">Pesquisar</button></div>
 </form>
-<div class="row">
-    @foreach(var m in Model) {
-        <div class="col-md-3 mb-3">
-            <div class="card h-100">
-                <img src="@m.PosterUrl" class="card-img-top" alt="@m.Titulo" />
-                <div class="card-body">
-                    <h6>@m.Titulo</h6>
-                    <p>@m.SinopseCurta</p>
-                </div>
-                <div class="card-footer">
-                    <a class="btn btn-sm btn-primary" href="/Movies/Details/@m.Codigo">Ver Filme</a>
-                </div>
-            </div>
-        </div>
-    }
+
+<div id="movies-grid" class="row">
+    <div class="col-12 d-flex justify-content-center py-5" id="movies-loading"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>
 </div>
+
+@section Scripts {
+<script>
+(function () {
+  const grid = document.getElementById('movies-grid');
+  const loading = document.getElementById('movies-loading');
+
+  function renderCard(m) {
+    const poster = m.posterUrl || 'https://via.placeholder.com/500x750?text=Sem+Imagem';
+    const details = m.detailsUrl || ('/Filmes/Details?tmdbId=' + (m.codigo || ''));
+    return `
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          <img src="${poster}" class="card-img-top" alt="${(m.titulo||'')}" />
+          <div class="card-body">
+            <h6>${(m.titulo||'')}</h6>
+            <p>${(m.sinopseCurta||'')}</p>
+          </div>
+          <div class="card-footer">
+            <a class="btn btn-sm btn-primary" href="${details}">Ver Filme</a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function fetchPopular(count = 40) {
+    loading.style.display = 'flex';
+    fetch(`/api/filmes/tmdb?section=MaisAssistidos&count=${count}`)
+      .then(r => r.ok ? r.json() : Promise.reject(r))
+      .then(list => {
+        loading.style.display = 'none';
+        grid.innerHTML = (list && list.length) ? list.map(renderCard).join('') : '<div class="col-12 alert alert-info">Nenhum filme encontrado.</div>';
+      })
+      .catch(err => {
+        console.error(err);
+        loading.style.display = 'none';
+        grid.innerHTML = '<div class="col-12 alert alert-danger">Erro ao carregar filmes.</div>';
+      });
+  }
+
+  function search(query) {
+    if (!query) { fetchPopular(); return; }
+    loading.style.display = 'flex';
+    fetch(`/api/filmes/tmdb/search?query=${encodeURIComponent(query)}&count=40`)
+      .then r => r.ok ? r.json() : Promise.reject(r))
+      .then(list => {
+        loading.style.display = 'none';
+        grid.innerHTML = (list && list.length) ? list.map(renderCard).join('') : '<div class="col-12 alert alert-info">Nenhum resultado.</div>';
+      })
+      .catch(err => {
+        console.error(err);
+        loading.style.display = 'none';
+        grid.innerHTML = '<div class="col-12 alert alert-danger">Erro na busca.</div>';
+      });
+  }
+
+  document.getElementById('search-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const q = document.getElementById('search-input').value.trim();
+    search(q);
+  });
+
+  // carregamento inicial
+  fetchPopular();
+})();
+</script>
+}
