@@ -1,0 +1,43 @@
+﻿@model PipocaResenha.Models.Review
+@{
+    ViewData["Titulo"] = "Editar Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark border-secondary shadow-lg">
+                <div class="card-header border-secondary">
+                    <h4 class="mb-0 text-white">Editar sua avaliação</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Codigo" />
+                        <input type="hidden" asp-for="CodigoFilme" />
+
+                        <div class="mb-3">
+                            <label class="form-label text-white-50">Sua Nota (0 a 10)</label>
+                            <select asp-for="Nota" class="form-select bg-dark text-white border-secondary">
+                                @for (int i = 10; i >= 0; i--)
+                                {
+                                    <option value="@i">@i ★</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-white-50">O que você achou?</label>
+                            <textarea asp-for="TextoReview" class="form-control bg-dark text-white border-secondary" rows="5" required></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">Salvar Alterações</button>
+                            <a href="/Profile" class="btn btn-outline-light">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

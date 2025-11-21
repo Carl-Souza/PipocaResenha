@@ -49,8 +49,8 @@ namespace PipocaResenha.Controllers
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(mc => new {
-                    name = mc.Cinema.Nome,
-                    Cidacidadede = mc.Cinema.Cidade,
+                    nome = mc.Cinema.Nome,
+                    cidade = mc.Cinema.Cidade,
                     endereco = mc.Cinema.Endereco
                 })
                 .ToListAsync();
@@ -72,6 +72,26 @@ namespace PipocaResenha.Controllers
                 query = query.Where(m => m.FilmesCinemas.Any(c => c.Cinema.Cidade == cidade));
 
             return View(await query.ToListAsync());
+        }
+        public async Task<IActionResult> EmBreve(string search, string age, string cidade)
+        {
+            var query = _db.Filmes
+                .Include(m => m.FilmesCinemas)
+                .Where(m => !m.EmCartaz) 
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(m => m.Titulo.Contains(search));
+
+            if (!string.IsNullOrEmpty(age))
+                query = query.Where(m => m.FaixaEtaria == age);
+
+            if (!string.IsNullOrEmpty(cidade))
+                query = query.Where(m => m.FilmesCinemas.Any(c => c.Cinema.Cidade == cidade));
+
+            var filmes = await query.ToListAsync();
+
+            return View(filmes);
         }
     }
 }

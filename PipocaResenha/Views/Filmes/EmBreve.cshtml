@@ -1,14 +1,54 @@
-@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
-<h1>Em Breve</h1>
-<p>Filmes organizados por mês</p>
-<div class="mb-4">
-    <!-- placeholder: implemente agrupamento por mês -->
-    <div class="d-flex overflow-auto">
-        @foreach(var m in Model) {
-            <div class="card me-3" style="min-width:250px;">
-                <img src="@m.PosterUrl" class="card-img-top" />
-                <div class="card-body"><h6>@m.Titulo</h6><p>@m.SinopseCurta</p></div>
+@model IEnumerable<PipocaResenha.Models.Filmes>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Globalization
+
+<div class="container py-4">
+    <h2 class="mb-4 border-bottom border-secondary pb-2">Em Breve nos Cinemas</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-dark text-center">Nenhum lançamento previsto no momento.</div>
+    }
+    else
+    {
+        var grupos = Model
+        .Where(m => m.DataLancamento.HasValue)
+        .OrderBy(m => m.DataLancamento)
+        .GroupBy(m => new { m.DataLancamento.Value.Year, m.DataLancamento.Value.Month });
+
+        foreach (var grupo in grupos)
+        {
+            // Formata nome do mês (ex: Novembro de 2025)
+            string nomeMes = new DateTime(grupo.Key.Year, grupo.Key.Month, 1)
+            .ToString("MMMM 'de' yyyy", new CultureInfo("pt-BR"));
+            // Capitaliza a primeira letra
+            nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
+
+            <div class="mes-section mb-5">
+                <h4 class="text-danger mb-3">@nomeMes</h4>
+                <div class="row g-4">
+                    @foreach (var filme in grupo)
+                    {
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="card h-100 bg-transparent border-0 filme-vertical-card">
+                                <a href="/Filmes/Details/@filme.Codigo" class="position-relative d-block overflow-hidden rounded-3">
+                                    <img src="@(filme.PosterUrl ?? "https://via.placeholder.com/300x450")"
+                                         class="img-fluid shadow-sm w-100" style="aspect-ratio: 2/3; object-fit: cover;">
+                                    <div class="hover-info d-flex align-items-center justify-content-center">
+                                        <span class="fs-1 text-white">+</span>
+                                    </div>
+                                </a>
+                                <div class="mt-2 text-center">
+                                    <h6 class="mb-0 text-white text-truncate">@filme.Titulo</h6>
+                                    <small class="text-muted">@filme.DataLancamento.Value.ToString("dd/MM")</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         }
-    </div>
+    }
 </div>

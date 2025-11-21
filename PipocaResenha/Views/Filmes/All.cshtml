@@ -1,24 +1,94 @@
-@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
-<h1>Todos os filmes</h1>
-<form method="get" class="row g-3 mb-3">
-    <div class="col-md-4"><input name="search" class="form-control" placeholder="Pesquisar..." /></div>
-    <div class="col-md-3"><input name="cidade" class="form-control" placeholder="Cidade" /></div>
-    <div class="col-md-2"><select name="age" class="form-select"><option value="">Faixa</option><option>12</option><option>14</option></select></div>
-    <div class="col-md-2"><button class="btn btn-primary">Filtrar</button></div>
-</form>
-<div class="row">
-    @foreach(var m in Model) {
-        <div class="col-md-3 mb-3">
-            <div class="card h-100">
-                <img src="@m.PosterUrl" class="card-img-top" alt="@m.Titulo" />
-                <div class="card-body">
-                    <h6>@m.Titulo</h6>
-                    <p>@m.SinopseCurta</p>
+﻿@model IEnumerable<PipocaResenha.Models.Filmes>
+@{
+    ViewData["Titulo"] = "Catálogo Completo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold border-start border-4 border-danger ps-3">Catálogo de Filmes</h2>
+        <span class="badge bg-dark border border-secondary text-white-50">@Model.Count() títulos encontrados</span>
+    </div>
+
+    <div class="card bg-dark border-secondary mb-5">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small">PESQUISAR TÍTULO</label>
+                    <input name="search" class="form-control bg-black text-white border-secondary" placeholder="Ex: Batman..." value="@Context.Request.Query["search"]" />
                 </div>
-                <div class="card-footer">
-                    <a class="btn btn-sm btn-primary" href="/Movies/Details/@m.Codigo">Ver Filme</a>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">CIDADE DO CINEMA</label>
+                    <input name="cidade" class="form-control bg-black text-white border-secondary" placeholder="Ex: São Paulo" value="@Context.Request.Query["cidade"]" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">FAIXA ETÁRIA</label>
+                    <select name="age" class="form-select bg-black text-white border-secondary">
+                        <option value="">Todas</option>
+                        <option value="L">Livre (L)</option>
+                        <option value="10">10 anos</option>
+                        <option value="12">12 anos</option>
+                        <option value="14">14 anos</option>
+                        <option value="16">16 anos</option>
+                        <option value="18">18 anos</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-danger fw-bold">FILTRAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        @foreach (var m in Model)
+        {
+            <div class="col">
+                <div class="card h-100 bg-transparent border-0 filme-vertical-card position-relative group-hover">
+                    <a href="/Filmes/Details/@m.Codigo" class="d-block overflow-hidden rounded-3 shadow-sm position-relative">
+                        <img src="@(string.IsNullOrEmpty(m.PosterUrl) ? "https://placehold.co/300x450/222/fff?text=Sem+Capa" : m.PosterUrl)"
+                             class="img-fluid w-100 rounded shadow-sm"
+                             style="aspect-ratio: 2/3; object-fit: cover;"
+                             alt="@m.Titulo"
+                             onerror="this.onerror=null;this.src='https://placehold.co/300x450/222/fff?text=Imagem+N%C3%A3o+Encontrada';" />
+
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center opacity-0 hover-visible transition-opacity">
+                            <span class="btn btn-outline-light rounded-pill btn-sm">Ver Detalhes</span>
+                        </div>
+                    </a>
+
+                    <div class="mt-2">
+                        <h6 class="text-white text-truncate mb-1" title="@m.Titulo">@m.Titulo</h6>
+                        <div class="d-flex justify-content-between align-items-center font-monospace small">
+                            <span class="text-muted">@(m.DataLancamento?.Year.ToString() ?? "N/A")</span>
+                            <span class="badge bg-secondary bg-opacity-25 border border-secondary text-secondary">@m.FaixaEtaria</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h3 class="text-white-50">Nenhum filme encontrado com esses filtros. 😢</h3>
+            <a href="/Filmes/All" class="btn btn-link text-danger">Limpar filtros</a>
         </div>
     }
 </div>
+
+<style>
+    /* CSS inline específico para hover desta página */
+    .hover-visible {
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .filme-vertical-card:hover .hover-visible {
+        opacity: 1 !important;
+    }
+
+    .filme-vertical-card:hover img {
+        transform: scale(1.05);
+    }
+</style>

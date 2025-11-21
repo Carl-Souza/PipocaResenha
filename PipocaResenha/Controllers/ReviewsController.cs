@@ -19,11 +19,16 @@ namespace PipocaResenha.Controllers
         {
             int codigoUsuario = int.Parse(User.FindFirst("Codigo").Value);
 
+            // Verifica se já existe
             bool exists = await _db.Reviews
                 .AnyAsync(r => r.CodigoFilme == codigoFilme && r.CodigoUsuario == codigoUsuario);
 
             if (exists)
-                return BadRequest("Você já avaliou este filme.");
+            {
+                // ARMAZENA A MENSAGEM DE ERRO E REDIRECIONA DE VOLTA
+                TempData["MensagemErro"] = "Você já avaliou este filme! Edite sua avaliação existente no seu Perfil.";
+                return RedirectToAction("Details", "Filmes", new { codigo = codigoFilme });
+            }
 
             var review = new Review
             {
@@ -36,7 +41,10 @@ namespace PipocaResenha.Controllers
             _db.Reviews.Add(review);
             await _db.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Movies", new { codigo = codigoFilme });
+            // MENSAGEM DE SUCESSO (Opcional, mas fica chique)
+            TempData["MensagemSucesso"] = "Avaliação publicada com sucesso!";
+
+            return RedirectToAction("Details", "Filmes", new { codigo = codigoFilme });
         }
 
         public async Task<IActionResult> Edit(int codigo)
@@ -60,7 +68,7 @@ namespace PipocaResenha.Controllers
             review.TextoReview = model.TextoReview;
 
             await _db.SaveChangesAsync();
-            return RedirectToAction("Details", "Movies", new { codigo = review.CodigoFilme });
+            return RedirectToAction("Details", "Filmes", new { codigo = review.CodigoFilme });
         }
 
         [HttpPost]

@@ -1,0 +1,48 @@
+﻿@model dynamic
+@{
+    var titulo = Model.Titulo;
+    var filmes = Model.Filmes as IEnumerable<PipocaResenha.Models.Filmes>;
+}
+
+<section class="mb-5 position-relative">
+    <h3 class="border-start border-4 border-danger ps-3 mb-4 text-uppercase fs-5">@titulo</h3>
+
+    <div class="carrossel-filmes">
+        <button class="seta-esquerda">❮</button>
+        <button class="seta-direita">❯</button>
+
+        <div class="filme-linha">
+            @foreach (var filme in filmes)
+            {
+                <div class="filme-card">
+                    <div class="poster-wrapper">
+                        <img src="@(string.IsNullOrEmpty(filme.PosterUrl) ? "https://placehold.co/300x450/222/fff?text=Sem+Capa" : filme.PosterUrl)"
+                             alt="@filme.Titulo"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='https://placehold.co/300x450/222/fff?text=Erro+Img';">
+
+                        <div class="poster-overlay">
+                            <a href="/Filmes/Details/@filme.Codigo" class="btn btn-light btn-sm rounded-pill px-3 fw-bold">
+                                Ver Detalhes
+                            </a>
+                            @if (!string.IsNullOrEmpty(filme.UrlIngreso))
+                            {
+                                <a href="@filme.UrlIngreso" target="_blank" class="btn btn-danger btn-sm rounded-pill px-3">
+                                    🎟 Ingresso
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="p-3">
+                        <h6 class="text-white text-truncate mb-1" title="@filme.Titulo">@filme.Titulo</h6>
+                        <div class="d-flex justify-content-between align-items-center small">
+                            <span class="badge bg-dark border border-secondary text-light">@filme.FaixaEtaria</span>
+                            <span class="text-warning">★ @(filme.Reviews != null && filme.Reviews.Any() ? filme.Reviews.Average(r => r.Nota).ToString("F1") : "-")</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

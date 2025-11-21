@@ -9,7 +9,7 @@ namespace PipocaResenha.Models
         [Required] public string Nome { get; set; }
         [Required, EmailAddress] public string Email { get; set; }
         [Required] public string PasswordHash { get; set; }
-        public string PhotoUrl { get; set; }
+        public string? PhotoUrl { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }
 }
