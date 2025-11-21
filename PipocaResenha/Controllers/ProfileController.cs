@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using PipocaResenha.Data;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Security.Claims; // Necessário para ler o User.FindFirst
+using System.Security.Claims; 
 
 namespace PipocaResenha.Controllers
 {
-    [Authorize] // Garante que só quem está logado acessa
+    [Authorize] 
     public class ProfileController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -18,10 +18,8 @@ namespace PipocaResenha.Controllers
             _db = db;
         }
 
-        // GET: Carrega a tela do perfil
         public async Task<IActionResult> Index()
         {
-            // Pega o ID do usuário logado através do Cookie
             var claimCodigo = User.FindFirst("Codigo");
             if (claimCodigo == null) return RedirectToAction("Login", "Account");
 
@@ -36,43 +34,34 @@ namespace PipocaResenha.Controllers
             return View(usuario);
         }
 
-        // POST: Processa a edição dos dados (Backend da edição)
         [HttpPost]
-        [ValidateAntiForgeryToken] // Segurança contra ataques CSRF
+        [ValidateAntiForgeryToken] 
         public async Task<IActionResult> EditProfile(string nome, string photoUrl)
         {
-            // 1. Identifica quem é o usuário logado
+
             var claimCodigo = User.FindFirst("Codigo");
             if (claimCodigo == null) return RedirectToAction("Login", "Account");
 
             int codigoUsuario = int.Parse(claimCodigo.Value);
 
-            // 2. Busca o usuário no banco
             var usuario = await _db.Usuario.FindAsync(codigoUsuario);
 
             if (usuario == null) return NotFound();
 
-            // 3. Atualiza os dados
-            // Se o campo nome vier vazio (por inspeção de elemento), mantém o antigo por segurança
             if (!string.IsNullOrWhiteSpace(nome))
             {
                 usuario.Nome = nome;
             }
 
-            // Atualiza a foto (pode ser vazia se o usuário quiser remover)
             usuario.PhotoUrl = photoUrl;
 
-            // 4. Salva as alterações no banco de dados
             _db.Usuario.Update(usuario);
             await _db.SaveChangesAsync();
 
-            // 5. Atualiza o cookie de autenticação para refletir o novo nome imediatamente (Opcional, mas recomendado)
-            // Para simplificar aqui, apenas redirecionamos. O nome no header atualizará no próximo login ou se recriarmos o cookie.
 
             return RedirectToAction("Index");
         }
 
-        // POST: Excluir Conta
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAccount()
@@ -83,29 +72,26 @@ namespace PipocaResenha.Controllers
             int codigoUsuario = int.Parse(claimCodigo.Value);
 
             var usuario = await _db.Usuario
-                .Include(u => u.Reviews) // Traz os reviews junto para apagar em cascata
+                .Include(u => u.Reviews) 
                 .FirstOrDefaultAsync(u => u.Codigo == codigoUsuario);
 
             if (usuario != null)
             {
-                // Remove reviews primeiro (se o banco não tiver Cascade Delete configurado)
+
                 if (usuario.Reviews != null && usuario.Reviews.Any())
                 {
                     _db.Reviews.RemoveRange(usuario.Reviews);
                 }
 
-                // Remove o usuário
                 _db.Usuario.Remove(usuario);
                 await _db.SaveChangesAsync();
             }
 
-            // Desloga o usuário
             await Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions.SignOutAsync(HttpContext);
 
             return RedirectToAction("Index", "Home");
         }
 
-        // API: Paginação dos reviews (Já implementamos anteriormente)
         [HttpGet]
         public async Task<IActionResult> GetMyReviews(int page = 1)
         {

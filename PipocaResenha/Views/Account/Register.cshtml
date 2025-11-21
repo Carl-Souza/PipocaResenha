@@ -1,27 +1,35 @@
-@{
+@{ 
     ViewData["Titulo"] = "Crie sua conta";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
 
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="card bg-dark border-secondary text-white shadow-lg" style="max-width: 450px; width: 100%;">
         <div class="card-body p-5">
+            
             <div class="text-center mb-4">
                 <h2 class="fw-bold">Criar Conta</h2>
                 <p class="text-white-50">Junte-se à comunidade Pipoca & Resenha.</p>
             </div>
 
+            @if (TempData["MensagemErro"] != null)
+            {
+                <div class="alert alert-danger border-danger bg-danger bg-opacity-10 text-danger mb-4 p-2 text-center small rounded" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> @TempData["MensagemErro"]
+                </div>
+            }
+
             <form method="post" action="/Account/Register">
                 <div class="mb-3">
                     <label class="form-label text-muted small">NOME COMPLETO</label>
-                    <input name="name" class="form-control bg-black text-white border-secondary p-3" placeholder="Como você quer ser chamado?" required />
+                    <input name="name" class="form-control bg-black text-white border-secondary p-3" placeholder="Seu nome" required />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-muted small">E-MAIL</label>
                     <input type="email" name="email" class="form-control bg-black text-white border-secondary p-3" placeholder="seu@email.com" required />
                 </div>
-
+                
                 <div class="mb-4">
                     <label class="form-label text-muted small">SENHA</label>
                     <input type="password" name="password" class="form-control bg-black text-white border-secondary p-3" placeholder="Crie uma senha forte" required />

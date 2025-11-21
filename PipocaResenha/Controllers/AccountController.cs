@@ -16,23 +16,30 @@ namespace PipocaResenha.Controllers
         private readonly ApplicationDbContext _db;
         public AccountController(ApplicationDbContext db) { _db = db; }
 
+
         public IActionResult Register() => View();
 
         [HttpPost]
         public async Task<IActionResult> Register(string name, string email, string password)
         {
+
             if (await _db.Usuario.AnyAsync(u => u.Email == email))
-                return BadRequest("Email já cadastrado.");
+            {
+                TempData["MensagemErro"] = "Este e-mail já está cadastrado! Tente fazer login.";
+                return View(); 
+            }
 
             var usuario = new Usuarios
             {
                 Nome = name,
                 Email = email,
-                PasswordHash = password
+                PasswordHash = password 
             };
 
             _db.Usuario.Add(usuario);
             await _db.SaveChangesAsync();
+
+            TempData["MensagemSucesso"] = "Conta criada com sucesso! Faça login.";
             return RedirectToAction("Login");
         }
 
@@ -42,17 +49,20 @@ namespace PipocaResenha.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             var usuario = await _db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+
             if (usuario == null || usuario.PasswordHash != password)
-                return BadRequest("Credenciais inválidas.");
+            {
+                TempData["MensagemErro"] = "E-mail ou senha incorretos. Verifique suas credenciais.";
+                return View(); 
+            }
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.Name, usuario.Nome),
-        new Claim("Codigo", usuario.Codigo.ToString())
-    };
+                new Claim(ClaimTypes.Name, usuario.Nome),
+                new Claim("Codigo", usuario.Codigo.ToString())
+            };
 
             var identity = new ClaimsIdentity(claims, "CookieAuth");
-
             await HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(identity));
 
             return RedirectToAction("Index", "Home");
@@ -62,13 +72,6 @@ namespace PipocaResenha.Controllers
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-
-        private string Hash(string input)
-        {
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToBase64String(bytes);
         }
     }
 }

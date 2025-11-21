@@ -3,14 +3,11 @@
     ViewData["Titulo"] = Model.Titulo;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // Cálculo da média de notas
     double mediaNota = Model.Reviews != null && Model.Reviews.Any()
         ? Model.Reviews.Average(r => r.Nota)
         : 0;
 
-    // Verifica se o usuário já avaliou (para esconder formulário se regra de negócio 2 exigir)
     bool usuarioJaAvaliou = false;
-    // (Essa lógica idealmente viria da Controller via ViewBag, mas visualmente tratamos aqui se necessário)
 }
 
 <div class="container py-5">
@@ -196,12 +193,10 @@
 </style>
 
 <script>
-    // Variáveis de controle
     let paginaCinema = 1;
     let loadingCinemas = false;
     let acabouCinemas = false;
     
-    // Pegamos o título do filme direto do Model do C# para usar na busca do Google
     const tituloFilme = "@Html.Raw(Model.Titulo)"; 
 
     function loadCinemas() {
@@ -212,17 +207,14 @@
         
         const codigoFilme = $('#cinema-scrollable').data('filme-codigo');
         
-        // Adicionei um "timestamp" na URL (?v=...) para obrigar o navegador a não usar cache
         $.get('/Filmes/ListaCinemasParaFilmes?v=' + new Date().getTime(), { codigoFilme: codigoFilme, page: paginaCinema }, function(data){
             $('#loading-cinemas').hide();
             
             if (data && data.length > 0) {
                 const html = data.map(c => {
-                    // Lê as propriedades exatas que definimos no Controller (PascalCase)
                     const nome = c.NomeCinema || "Cinema"; 
                     const local = (c.Endereco || "") + " - " + (c.Cidade || "");
                     
-                    // Cria o link inteligente para o Google
                     const linkHorarios = `https://www.google.com/search?q=sessões+${encodeURIComponent(tituloFilme)}+${encodeURIComponent(nome)}`;
 
                     return `

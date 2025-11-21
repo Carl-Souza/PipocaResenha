@@ -20,10 +20,8 @@
 
         foreach (var grupo in grupos)
         {
-            // Formata nome do mês (ex: Novembro de 2025)
             string nomeMes = new DateTime(grupo.Key.Year, grupo.Key.Month, 1)
             .ToString("MMMM 'de' yyyy", new CultureInfo("pt-BR"));
-            // Capitaliza a primeira letra
             nomeMes = char.ToUpper(nomeMes[0]) + nomeMes.Substring(1);
 
             <div class="mes-section mb-5">

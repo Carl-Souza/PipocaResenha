@@ -18,21 +18,18 @@ namespace PipocaResenha.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // 1. Lançamentos: Filmes em cartaz, ordenados por data de lançamento (mais recentes)
             var lancamentos = await _db.Filmes
                 .Where(f => f.EmCartaz)
                 .OrderByDescending(f => f.DataLancamento)
                 .Take(10)
                 .ToListAsync();
 
-            // 2. Top Bem Avaliados: Baseado na média das notas dos reviews
             var topAvaliados = await _db.Filmes
                 .Include(f => f.Reviews)
                 .OrderByDescending(f => f.Reviews.Any() ? f.Reviews.Average(r => r.Nota) : 0)
                 .Take(10)
                 .ToListAsync();
 
-            // 3. Mais Comentados: Baseado na quantidade de reviews (simulando "Mais Assistidos")
             var maisComentados = await _db.Filmes
                 .Include(f => f.Reviews)
                 .OrderByDescending(f => f.Reviews.Count())
@@ -52,7 +49,6 @@ namespace PipocaResenha.Controllers
         public IActionResult Sobre() => View();
         public IActionResult Contato() => View();
 
-        // Adicionar página de erro para produção
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() => View();
     }

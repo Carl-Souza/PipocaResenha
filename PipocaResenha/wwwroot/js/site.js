@@ -1,5 +1,4 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    // Seleciona todos os containers de carrossel na página
     const carrosseis = document.querySelectorAll('.carrossel-filmes');
 
     carrosseis.forEach(container => {
@@ -9,7 +8,6 @@
 
         if (!linha || !btnEsq || !btnDir) return;
 
-        // Quantidade de scroll (aproximadamente a largura de 2 cards)
         const scrollAmount = 450;
 
         btnDir.addEventListener('click', () => {

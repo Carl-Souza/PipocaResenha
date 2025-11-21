@@ -83,9 +83,6 @@
 
 @section Scripts {
     <script>
-        // ==============================================================
-        // LÓGICA DE SCROLL INFINITO E REVIEWS
-        // ==============================================================
         $(document).ready(function () {
             let pagina = 1;
             let carregando = false;
@@ -132,10 +129,8 @@
                 });
             }
 
-            // Inicia carregamento
             carregarReviews();
 
-            // Detecta rolagem
             $('#reviews-container').on('scroll', function() {
                 let div = $(this);
                 if (div.scrollTop() + div.innerHeight() >= div[0].scrollHeight - 50) {
@@ -144,7 +139,6 @@
             });
         });
 
-        // Função de Excluir Review
         function excluirReview(codigo) {
             if(!confirm("Tem certeza que deseja excluir este review?")) return;
 
