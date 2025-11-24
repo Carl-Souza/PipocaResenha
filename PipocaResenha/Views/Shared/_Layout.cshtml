@@ -37,8 +37,12 @@
                 <ul class="navbar-nav flex-row">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item"><a class="nav-link" href="/Profile">Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Account/Logout">Sair</a></li>
+                        <div>
+                            <li class="nav-item"><a style="padding:5px" class="nav-link" href="/Profile">Perfil</a></li>
+                        </div>
+                        <div>
+                            <li class="nav-item"><a style="padding:5px" class="nav-link" href="/Account/Logout">Sair</a></li>
+                        </div>
                     }
                     else
                     {

@@ -33,6 +33,7 @@ namespace PipocaResenha.Controllers
         {
             var movie = await _db.Filmes
                 .Include(m => m.Reviews)
+                .ThenInclude(r => r.Usuario)
                 .FirstOrDefaultAsync(m => m.Codigo == codigo);
 
             if (movie == null) return NotFound();
